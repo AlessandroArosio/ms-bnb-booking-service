@@ -1,6 +1,6 @@
 package com.aledev.alba.msbnbbookingservice.web.model;
 
-import com.aledev.alba.msbnbbookingservice.model.Property;
+import com.aledev.alba.msbnbbookingservice.domain.Property;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +18,6 @@ import java.util.UUID;
 public class BookingDto {
     private Long id;
     private UUID bookingUid;
-
     private Long customerId;
     private LocalDateTime checkin;
     private LocalDateTime checkout;

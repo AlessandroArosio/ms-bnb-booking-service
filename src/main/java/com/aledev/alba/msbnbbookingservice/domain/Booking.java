@@ -1,4 +1,4 @@
-package com.aledev.alba.msbnbbookingservice.model;
+package com.aledev.alba.msbnbbookingservice.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
