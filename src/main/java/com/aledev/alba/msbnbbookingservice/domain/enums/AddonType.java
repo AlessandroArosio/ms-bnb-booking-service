@@ -1,4 +1,4 @@
-package com.aledev.alba.msbnbbookingservice.web.model;
+package com.aledev.alba.msbnbbookingservice.domain.enums;
 
 public enum AddonType {
     CROISSANT,
