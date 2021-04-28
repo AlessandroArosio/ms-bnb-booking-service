@@ -1,5 +1,6 @@
 package com.aledev.alba.msbnbbookingservice.service;
 
+import com.aledev.alba.msbnbbookingservice.domain.BookingPagedList;
 import com.aledev.alba.msbnbbookingservice.domain.entity.Booking;
 import com.aledev.alba.msbnbbookingservice.domain.entity.Room;
 import com.aledev.alba.msbnbbookingservice.domain.enums.AddonCategory;
@@ -15,10 +16,9 @@ import com.aledev.alba.msbnbbookingservice.web.model.Extras;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
@@ -69,7 +69,7 @@ class BookingServiceImplTest {
                 .createdDate(Timestamp.valueOf(LocalDateTime.now()))
                 .roomsBooked(List.of(Room.builder()
                         .id(22L)
-                        .capacity((short)2)
+                        .capacity((short) 2)
                         .property(Property.FERRIER_MEDWAY)
                         .roomName("Bedroom3")
                         .roomType("Double")
@@ -88,7 +88,7 @@ class BookingServiceImplTest {
                 .createdDate(Timestamp.valueOf(LocalDateTime.now()))
                 .roomsBooked(List.of(Room.builder()
                         .id(22L)
-                        .capacity((short)2)
+                        .capacity((short) 2)
                         .property(Property.FERRIER_MEDWAY)
                         .roomName("Bedroom3")
                         .roomType("Double")
@@ -98,15 +98,28 @@ class BookingServiceImplTest {
 
     @Test
     void listBookings_returnsPagedListTest() {
+        var pageable = PageRequest.of(1, 2);
+        var bookingPage = Mockito.mock(Page.class);
+
+        when(bookingPage.getPageable()).thenReturn(pageable);
+        when(bookingRepository.findAll(pageable)).thenReturn(bookingPage);
+        when(mapper.bookingToDto(any())).thenReturn(dto);
+
+        BookingPagedList bookingDtos = bookingService.listBookings(pageable);
+
+        assertThat(bookingDtos).isNotNull();
     }
 
     @Test
     void getBookingByIdTest() {
+        dto.setHasAddons(true);
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
         when(mapper.bookingToDto(any())).thenReturn(dto);
+        when(addonService.getAllAddonsForBookingUUID(any())).thenReturn(new Extras());
 
         BookingDto bookingDto = bookingService.getBookingById(1L);
 
+        verify(addonService, times(1)).getAllAddonsForBookingUUID(any());
         assertThat(bookingDto).isNotNull();
         assertThat(bookingDto.getCheckin()).isEqualTo(dto.getCheckin());
     }
@@ -140,10 +153,11 @@ class BookingServiceImplTest {
 
         BookingDto bookingDto = bookingService.getBookingByUUID(UUID.randomUUID());
 
-        // TODO add extras
+        verify(addonService, times(1)).getAllAddonsForBookingUUID(any());
 
         assertThat(bookingDto.getHasAddons()).isTrue();
         assertThat(bookingDto.getCustomerId()).isEqualTo(dto.getCustomerId());
+        assertThat(bookingDto.getExtras().getAddonList()).hasSize(1);
     }
 
     @Test
