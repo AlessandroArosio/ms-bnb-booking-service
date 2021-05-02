@@ -7,6 +7,7 @@ import com.aledev.alba.msbnbbookingservice.repository.BookingRepository;
 import com.aledev.alba.msbnbbookingservice.service.addon.AddonService;
 import com.aledev.alba.msbnbbookingservice.web.mappers.BookingMapper;
 import com.aledev.alba.msbnbbookingservice.web.model.BookingDto;
+import com.aledev.alba.msbnbbookingservice.web.model.Extras;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,20 +43,22 @@ public class BookingServiceImpl implements BookingService {
         BookingDto bookingDto = bookingMapper.bookingToDto(booking);
 
         if (bookingDto.getHasAddons()) {
-            bookingDto.setExtras(addonService.getAllAddonsForBookingUUID(bookingDto.getBookingUid()));
+            Optional<Extras> optExtra = addonService.getAllAddonsForBookingUUID(bookingDto.getBookingUid());
+            optExtra.ifPresent(bookingDto::setExtras);
         }
         return bookingDto;
     }
 
     @Override
     public BookingDto getBookingByUUID(UUID uuid) {
-        Booking booking = bookingRepository.findByBookingUid(uuid)
+        var booking = bookingRepository.findByBookingUid(uuid)
                 .orElseThrow(() -> new BookingException(String.format("Booking UUID %s: not found", uuid)));
 
         BookingDto bookingDto = bookingMapper.bookingToDto(booking);
 
         if (bookingDto.getHasAddons()) {
-            bookingDto.setExtras(addonService.getAllAddonsForBookingUUID(bookingDto.getBookingUid()));
+            Optional<Extras> optExtra = addonService.getAllAddonsForBookingUUID(bookingDto.getBookingUid());
+            optExtra.ifPresent(bookingDto::setExtras);
         }
         return bookingDto;
     }

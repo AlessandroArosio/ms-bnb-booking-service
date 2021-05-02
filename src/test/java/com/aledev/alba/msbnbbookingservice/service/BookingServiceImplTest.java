@@ -115,7 +115,7 @@ class BookingServiceImplTest {
         dto.setHasAddons(true);
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
         when(mapper.bookingToDto(any())).thenReturn(dto);
-        when(addonService.getAllAddonsForBookingUUID(any())).thenReturn(new Extras());
+        when(addonService.getAllAddonsForBookingUUID(any())).thenReturn(Optional.of(new Extras()));
 
         BookingDto bookingDto = bookingService.getBookingById(1L);
 
@@ -149,7 +149,7 @@ class BookingServiceImplTest {
         dto.setHasAddons(true);
         when(bookingRepository.findByBookingUid(any())).thenReturn(Optional.of(booking));
         when(mapper.bookingToDto(any())).thenReturn(dto);
-        when(addonService.getAllAddonsForBookingUUID(any())).thenReturn(extra);
+        when(addonService.getAllAddonsForBookingUUID(any())).thenReturn(Optional.of(extra));
 
         BookingDto bookingDto = bookingService.getBookingByUUID(UUID.randomUUID());
 

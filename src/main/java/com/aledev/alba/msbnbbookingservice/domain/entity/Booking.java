@@ -42,7 +42,8 @@ public class Booking {
     private Boolean isPaid = false;
     private Boolean hasAddons = false;
 
-    @OneToMany(targetEntity = Room.class, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Room.class, fetch = FetchType.EAGER,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "roomId", referencedColumnName = "id")
     List<Room> roomsBooked = new ArrayList<>();
 
