@@ -1,4 +1,4 @@
-package com.aledev.alba.msbnbbookingservice.web.controller;
+package com.aledev.alba.msbnbbookingservice.web.controller.v1;
 
 import com.aledev.alba.msbnbbookingservice.domain.BookingPagedList;
 import com.aledev.alba.msbnbbookingservice.service.BookingService;

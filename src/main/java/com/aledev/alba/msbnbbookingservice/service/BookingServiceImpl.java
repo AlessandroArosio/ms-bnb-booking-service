@@ -39,7 +39,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto getBookingById(Long id) {
-        Booking booking = bookingRepository.findById(id).orElseThrow(BookingException::new);
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new BookingException(String.format("Booking ID %s: not found", id)));
         BookingDto bookingDto = bookingMapper.bookingToDto(booking);
 
         if (bookingDto.getHasAddons()) {

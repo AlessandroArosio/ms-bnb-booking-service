@@ -1,10 +1,11 @@
-package com.aledev.alba.msbnbbookingservice.web.controller;
+package com.aledev.alba.msbnbbookingservice.web.controller.v1;
 
 import com.aledev.alba.msbnbbookingservice.domain.entity.Booking;
 import com.aledev.alba.msbnbbookingservice.domain.entity.Room;
 import com.aledev.alba.msbnbbookingservice.domain.enums.AddonCategory;
 import com.aledev.alba.msbnbbookingservice.domain.enums.AddonType;
 import com.aledev.alba.msbnbbookingservice.domain.enums.Property;
+import com.aledev.alba.msbnbbookingservice.domain.exceptions.BookingException;
 import com.aledev.alba.msbnbbookingservice.repository.BookingRepository;
 import com.aledev.alba.msbnbbookingservice.service.addon.AddonServiceImpl;
 import com.aledev.alba.msbnbbookingservice.web.model.Addon;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -32,7 +34,9 @@ import static com.github.jenspiegsa.wiremockextension.ManagedWireMockServer.with
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -225,5 +229,36 @@ class BookingControllerIT {
     void testDeleteBooking_ReturnsStatusNoContent() throws Exception {
         mvc.perform(MockMvcRequestBuilders.delete(API_ROOT + "/3"))
                 .andExpect(status().isNoContent());
+    }
+
+    @Order(7)
+    @Test
+    void testPlaceBooking_WithInvalidDto_ThrowsException() throws Exception {
+        var dto = BookingDto.builder()
+                .customerId(77L)
+                .checkin(LocalDateTime.now())
+                .checkout(LocalDateTime.now().plusDays(4))
+                .build();
+
+        String body = objectMapper.writeValueAsString(dto);
+
+        mvc.perform(
+                MockMvcRequestBuilders.post(API_ROOT)
+                        .content(body)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
+                .andExpect(result -> assertThat(result.getResolvedException().getMessage()).isNotNull());
+    }
+
+    @Order(8)
+    @Test
+    void testGetBookingById_ThrowsExceptionBookingNotFound() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get(API_ROOT + "/165"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof BookingException))
+                .andExpect(result -> assertThat(result.getResolvedException().getMessage())
+                        .isEqualTo("Booking ID 165: not found"));;
     }
 }
