@@ -45,8 +45,8 @@ public class BookingController {
         return bookingService.getBookingById(bookingId);
     }
 
-    @GetMapping("/{bookingUUID}")
-    public BookingDto getBookingById(@PathVariable UUID bookingUUID) {
+    @GetMapping("/uuid/{bookingUUID}")
+    public BookingDto getBookingByUuId(@PathVariable UUID bookingUUID) {
         return bookingService.getBookingByUUID(bookingUUID);
     }
 
