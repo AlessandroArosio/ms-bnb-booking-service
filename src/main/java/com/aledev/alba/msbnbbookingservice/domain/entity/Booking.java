@@ -45,7 +45,7 @@ public class Booking {
     @OneToMany(targetEntity = Room.class, fetch = FetchType.EAGER,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "roomId", referencedColumnName = "id")
-    List<Room> roomsBooked = new ArrayList<>();
+    private List<Room> roomsBooked = new ArrayList<>();
 
     @CreationTimestamp
     @Column(updatable = false)
