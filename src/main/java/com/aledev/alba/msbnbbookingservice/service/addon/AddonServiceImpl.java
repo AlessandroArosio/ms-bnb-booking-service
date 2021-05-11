@@ -12,7 +12,7 @@ import java.util.UUID;
 @Service
 @ConfigurationProperties(prefix = "alba.bnb", ignoreUnknownFields = false)
 public class AddonServiceImpl implements AddonService {
-    public static final String ADDON_PATH_V1 = "/api/v1/addon/";
+    public static final String ADDON_PATH_V1 = "/api/v1/addonOrder/";
     private final RestTemplate restTemplate;
 
     private String addonServiceHost;

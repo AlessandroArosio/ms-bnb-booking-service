@@ -69,7 +69,7 @@ class BookingControllerIT {
 
         @Bean(destroyMethod = "stop")
         public WireMockServer wireMockServer() {
-            WireMockServer server = with(wireMockConfig().port(8081));
+            WireMockServer server = with(wireMockConfig().port(8090));
             server.start();
             return server;
         }
