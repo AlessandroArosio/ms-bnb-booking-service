@@ -41,6 +41,7 @@ public class BookingDto {
     private Boolean isPaid;
     private Boolean hasAddons;
     private Extras extras;
+    private String notes;
 
     @NotNull
     private List<Room> roomsBooked;

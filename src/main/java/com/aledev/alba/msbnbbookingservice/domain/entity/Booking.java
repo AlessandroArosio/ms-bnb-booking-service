@@ -47,6 +47,8 @@ public class Booking {
     @JoinColumn(name = "roomId", referencedColumnName = "id")
     private List<Room> roomsBooked = new ArrayList<>();
 
+    private String notes;
+
     @CreationTimestamp
     @Column(updatable = false)
     private Timestamp createdDate;
