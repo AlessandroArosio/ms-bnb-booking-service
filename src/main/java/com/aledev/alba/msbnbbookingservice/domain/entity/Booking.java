@@ -27,8 +27,11 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
     private UUID bookingUid;
 
+    @NotNull
     private Long customerId;
 
     @NotNull

@@ -34,6 +34,7 @@ public class Room {
     private Property property;
 
     @Min(1)
+    @NotNull
     private Short capacity;
 
     @Version
