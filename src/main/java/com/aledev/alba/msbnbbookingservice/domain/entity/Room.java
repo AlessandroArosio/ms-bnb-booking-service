@@ -1,6 +1,7 @@
 package com.aledev.alba.msbnbbookingservice.domain.entity;
 
 import com.aledev.alba.msbnbbookingservice.domain.enums.Property;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,6 +40,7 @@ public class Room {
     @NotNull
     private Short capacity;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "roomsBooked")
     List<Booking> bookings = new ArrayList<>();
 

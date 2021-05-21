@@ -1,5 +1,6 @@
 package com.aledev.alba.msbnbbookingservice.web.controller.v1;
 
+import com.aledev.alba.msbnbbookingservice.bootstrap.Bootstrap;
 import com.aledev.alba.msbnbbookingservice.domain.entity.Booking;
 import com.aledev.alba.msbnbbookingservice.domain.entity.Room;
 import com.aledev.alba.msbnbbookingservice.domain.enums.AddonCategory;
@@ -7,6 +8,8 @@ import com.aledev.alba.msbnbbookingservice.domain.enums.AddonType;
 import com.aledev.alba.msbnbbookingservice.domain.enums.Property;
 import com.aledev.alba.msbnbbookingservice.domain.exceptions.BookingException;
 import com.aledev.alba.msbnbbookingservice.repository.BookingRepository;
+import com.aledev.alba.msbnbbookingservice.repository.RoomRepository;
+import com.aledev.alba.msbnbbookingservice.service.BookingService;
 import com.aledev.alba.msbnbbookingservice.service.addon.AddonServiceImpl;
 import com.aledev.alba.msbnbbookingservice.web.model.Addon;
 import com.aledev.alba.msbnbbookingservice.web.model.BookingDto;
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,7 +32,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import static com.github.jenspiegsa.wiremockextension.ManagedWireMockServer.with;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -45,6 +48,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class BookingControllerIT {
 
+    @MockBean
+    Bootstrap bootstrap;
+
+    @Autowired
+    RoomRepository roomRepository;
 
     @Autowired
     BookingController bookingController;
@@ -76,9 +84,16 @@ class BookingControllerIT {
     }
 
     @BeforeAll
-    static void beforeAll(@Autowired BookingRepository bookingRepository) {
-        bookingRepository.save(Booking.builder()
-                .bookingUid(UUID.fromString(testUuid))
+    static void beforeAll(@Autowired BookingService bookingService,
+                          @Autowired RoomRepository roomRepository) {
+        Room room = roomRepository.save(Room.builder()
+                .capacity((short) 2)
+                .property(Property.FERRIER_MEDWAY)
+                .roomName("Bedroom3")
+                .roomType("Double")
+                .build());
+
+        bookingService.newBooking(BookingDto.builder()
                 .bookingAmount(new BigDecimal("45.00"))
                 .customerId(50L)
                 .hasAddons(true)
@@ -86,17 +101,10 @@ class BookingControllerIT {
                 .checkin(LocalDateTime.of(2021, 7, 15, 14, 0))
                 .checkout(LocalDateTime.of(2021, 7, 17, 10, 0))
                 .createdDate(Timestamp.valueOf(LocalDateTime.now()))
-                .roomsBooked(List.of(Room.builder()
-                        .id(22L)
-                        .capacity((short) 2)
-                        .property(Property.FERRIER_MEDWAY)
-                        .roomName("Bedroom3")
-                        .roomType("Double")
-                        .build()))
+                .roomsBooked(List.of(room))
                 .build());
 
-        bookingRepository.save(Booking.builder()
-                .bookingUid(UUID.randomUUID())
+        bookingService.newBooking(BookingDto.builder()
                 .bookingAmount(new BigDecimal("73.00"))
                 .customerId(50L)
                 .hasAddons(false)
@@ -104,13 +112,7 @@ class BookingControllerIT {
                 .checkin(LocalDateTime.of(2021, 6, 12, 14, 0))
                 .checkout(LocalDateTime.of(2021, 6, 17, 10, 0))
                 .createdDate(Timestamp.valueOf(LocalDateTime.now()))
-                .roomsBooked(List.of(Room.builder()
-                        .id(22L)
-                        .capacity((short) 2)
-                        .property(Property.FERRIER_MEDWAY)
-                        .roomName("Bedroom3")
-                        .roomType("Double")
-                        .build()))
+                .roomsBooked(List.of(room))
                 .build());
     }
 
@@ -134,12 +136,7 @@ class BookingControllerIT {
                 .bookingAmount(new BigDecimal("107.60"))
                 .checkin(LocalDateTime.now())
                 .checkout(LocalDateTime.now().plusDays(4))
-                .roomsBooked(List.of(
-                        Room.builder()
-                                .roomType("Single")
-                                .roomName("Suite")
-                                .build()
-                ))
+                .roomsBooked(List.of(roomRepository.findById(1L).get()))
                 .build();
 
         String body = objectMapper.writeValueAsString(dto);
@@ -158,13 +155,14 @@ class BookingControllerIT {
     @Order(3)
     @Test
     void testGetBookingById_WillReturnBookingDtoWithExtras() throws Exception {
+        var uuid = bookingRepository.findById(1L).map(Booking::getBookingUid).orElseThrow();
         var extra = new Extras(List.of(
                 new Addon(AddonCategory.BREAKFAST, AddonType.ORANGE_JUICE, BigDecimal.ONE, 1),
                 new Addon(AddonCategory.BREAKFAST, AddonType.PAIN_AU_CHOCOLATE, BigDecimal.TEN, 2)),
                 false);
 
         String s = objectMapper.writeValueAsString(extra);
-        wireMockServer.stubFor(get(AddonServiceImpl.ADDON_PATH_V1 + testUuid)
+        wireMockServer.stubFor(get(AddonServiceImpl.ADDON_PATH_V1 + uuid)
                 .willReturn(okJson(s)));
 
         mvc.perform(MockMvcRequestBuilders.get(API_ROOT + "/1"))
@@ -185,7 +183,7 @@ class BookingControllerIT {
                 false);
 
         String s = objectMapper.writeValueAsString(extra);
-        wireMockServer.stubFor(get(AddonServiceImpl.ADDON_PATH_V1 + testUuid)
+        wireMockServer.stubFor(get(AddonServiceImpl.ADDON_PATH_V1 + uid)
                 .willReturn(okJson(s)));
 
         mvc.perform(MockMvcRequestBuilders.get(API_ROOT + "/uuid/" + uid))
@@ -203,12 +201,7 @@ class BookingControllerIT {
                 .bookingAmount(new BigDecimal("107.60"))
                 .checkin(LocalDateTime.now())
                 .checkout(LocalDateTime.now().plusDays(9))
-                .roomsBooked(List.of(
-                        Room.builder()
-                                .roomType("Double")
-                                .roomName("Suite")
-                                .build()
-                ))
+                .roomsBooked(List.of(roomRepository.findById(1L).get()))
                 .build();
 
         String body = objectMapper.writeValueAsString(dto);
