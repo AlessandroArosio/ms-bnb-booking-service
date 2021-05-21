@@ -9,6 +9,7 @@ import com.aledev.alba.msbnbbookingservice.web.mappers.BookingMapper;
 import com.aledev.alba.msbnbbookingservice.web.model.BookingDto;
 import com.aledev.alba.msbnbbookingservice.web.model.Extras;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
@@ -68,6 +70,8 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto newBooking(BookingDto dto) {
         Booking booking = bookingMapper.dtoToBooking(dto);
         booking.setBookingUid(UUID.randomUUID());
+
+        log.warn("BookingUUID: {}", booking.getBookingUid());
 
         return bookingMapper.bookingToDto(bookingRepository.save(booking));
     }

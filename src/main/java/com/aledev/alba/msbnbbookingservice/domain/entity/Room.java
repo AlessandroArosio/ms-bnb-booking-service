@@ -10,6 +10,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -36,6 +38,9 @@ public class Room {
     @Min(1)
     @NotNull
     private Short capacity;
+
+    @ManyToMany(mappedBy = "roomsBooked")
+    List<Booking> bookings = new ArrayList<>();
 
     @Version
     private Long version;
