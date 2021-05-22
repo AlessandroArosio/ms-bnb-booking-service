@@ -14,6 +14,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin("http://localhost:4200")
 @RequestMapping("/api/v1/bookings")
 public class BookingController {
     private static final Integer DEFAULT_PAGE_NUMBER = 0;

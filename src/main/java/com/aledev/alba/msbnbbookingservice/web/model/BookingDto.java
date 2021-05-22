@@ -1,6 +1,7 @@
 package com.aledev.alba.msbnbbookingservice.web.model;
 
 import com.aledev.alba.msbnbbookingservice.domain.entity.Room;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +12,7 @@ import javax.validation.constraints.Null;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,11 +31,13 @@ public class BookingDto {
     @NotNull
     private Long customerId;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @NotNull
-    private LocalDateTime checkin;
+    private LocalDate checkin;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @NotNull
-    private LocalDateTime checkout;
+    private LocalDate checkout;
 
     @Positive
     private BigDecimal bookingAmount;

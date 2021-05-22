@@ -30,6 +30,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -98,8 +99,8 @@ class BookingControllerIT {
                 .customerId(50L)
                 .hasAddons(true)
                 .isPaid(false)
-                .checkin(LocalDateTime.of(2021, 7, 15, 14, 0))
-                .checkout(LocalDateTime.of(2021, 7, 17, 10, 0))
+                .checkin(LocalDate.of(2021, 7, 15))
+                .checkout(LocalDate.of(2021, 7, 17))
                 .createdDate(Timestamp.valueOf(LocalDateTime.now()))
                 .roomsBooked(List.of(room))
                 .confirmationCode("ABC1")
@@ -110,8 +111,8 @@ class BookingControllerIT {
                 .customerId(50L)
                 .hasAddons(false)
                 .isPaid(false)
-                .checkin(LocalDateTime.of(2021, 6, 12, 14, 0))
-                .checkout(LocalDateTime.of(2021, 6, 17, 10, 0))
+                .checkin(LocalDate.of(2021, 6, 12))
+                .checkout(LocalDate.of(2021, 6, 17))
                 .createdDate(Timestamp.valueOf(LocalDateTime.now()))
                 .roomsBooked(List.of(room))
                 .confirmationCode("ABC2")
@@ -136,8 +137,8 @@ class BookingControllerIT {
         var dto = BookingDto.builder()
                 .customerId(77L)
                 .bookingAmount(new BigDecimal("107.60"))
-                .checkin(LocalDateTime.now())
-                .checkout(LocalDateTime.now().plusDays(4))
+                .checkin(LocalDate.now())
+                .checkout(LocalDate.now().plusDays(4))
                 .roomsBooked(List.of(roomRepository.findById(1L).get()))
                 .confirmationCode("ABC5")
                 .build();
@@ -202,8 +203,8 @@ class BookingControllerIT {
         var dto = BookingDto.builder()
                 .customerId(77L)
                 .bookingAmount(new BigDecimal("107.60"))
-                .checkin(LocalDateTime.now())
-                .checkout(LocalDateTime.now().plusDays(9))
+                .checkin(LocalDate.now())
+                .checkout(LocalDate.now().plusDays(9))
                 .roomsBooked(List.of(roomRepository.findById(1L).get()))
                 .confirmationCode("ABC9")
                 .build();
@@ -233,8 +234,8 @@ class BookingControllerIT {
     void testPlaceBooking_WithInvalidDto_ThrowsException() throws Exception {
         var dto = BookingDto.builder()
                 .customerId(77L)
-                .checkin(LocalDateTime.now())
-                .checkout(LocalDateTime.now().plusDays(4))
+                .checkin(LocalDate.now())
+                .checkout(LocalDate.now().plusDays(4))
                 .build();
 
         String body = objectMapper.writeValueAsString(dto);

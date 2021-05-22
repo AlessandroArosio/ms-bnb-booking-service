@@ -32,7 +32,12 @@ public class BookingServiceImpl implements BookingService {
         Page<Booking> bookingPage = bookingRepository.findAll(pageable);
 
         return new BookingPagedList(bookingPage.stream()
-                .map(bookingMapper::bookingToDto)
+                .map(booking -> {
+                    var dto = bookingMapper.bookingToDto(booking);
+                    checkAndAddExtrasIfAvailable(dto);
+
+                    return dto;
+                })
                 .collect(Collectors.toList()), PageRequest.of(
                 bookingPage.getPageable().getPageNumber(),
                 bookingPage.getPageable().getPageSize()),
@@ -44,11 +49,8 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new BookingException(String.format("Booking ID %s: not found", id)));
         BookingDto bookingDto = bookingMapper.bookingToDto(booking);
+        checkAndAddExtrasIfAvailable(bookingDto);
 
-        if (bookingDto.getHasAddons()) {
-            Optional<Extras> optExtra = addonService.getAllAddonsForBookingUUID(bookingDto.getBookingUid());
-            optExtra.ifPresent(bookingDto::setExtras);
-        }
         return bookingDto;
     }
 
@@ -58,11 +60,8 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new BookingException(String.format("Booking UUID %s: not found", uuid)));
 
         BookingDto bookingDto = bookingMapper.bookingToDto(booking);
+        checkAndAddExtrasIfAvailable(bookingDto);
 
-        if (bookingDto.getHasAddons()) {
-            Optional<Extras> optExtra = addonService.getAllAddonsForBookingUUID(bookingDto.getBookingUid());
-            optExtra.ifPresent(bookingDto::setExtras);
-        }
         return bookingDto;
     }
 
@@ -96,5 +95,12 @@ public class BookingServiceImpl implements BookingService {
     public void deleteBooking(Long id) {
         Optional<Booking> booking = bookingRepository.findById(id);
         booking.ifPresent(bookingRepository::delete);
+    }
+
+    private void checkAndAddExtrasIfAvailable(BookingDto bookingDto) {
+        if (bookingDto.getHasAddons()) {
+            Optional<Extras> optExtra = addonService.getAllAddonsForBookingUUID(bookingDto.getBookingUid());
+            optExtra.ifPresent(bookingDto::setExtras);
+        }
     }
 }

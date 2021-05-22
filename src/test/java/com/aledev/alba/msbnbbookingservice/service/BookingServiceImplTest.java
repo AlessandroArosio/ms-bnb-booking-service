@@ -23,6 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -64,8 +65,8 @@ class BookingServiceImplTest {
                 .customerId(50L)
                 .hasAddons(false)
                 .isPaid(false)
-                .checkin(LocalDateTime.of(2021, 7, 15, 14, 0))
-                .checkout(LocalDateTime.of(2021, 7, 17, 10, 0))
+                .checkin(LocalDate.of(2021, 7, 15))
+                .checkout(LocalDate.of(2021, 7, 17))
                 .createdDate(Timestamp.valueOf(LocalDateTime.now()))
                 .roomsBooked(List.of(Room.builder()
                         .id(22L)
@@ -83,8 +84,8 @@ class BookingServiceImplTest {
                 .customerId(50L)
                 .hasAddons(false)
                 .isPaid(false)
-                .checkin(LocalDateTime.of(2021, 7, 15, 14, 0))
-                .checkout(LocalDateTime.of(2021, 7, 17, 10, 0))
+                .checkin(LocalDate.of(2021, 7, 15))
+                .checkout(LocalDate.of(2021, 7, 17))
                 .createdDate(Timestamp.valueOf(LocalDateTime.now()))
                 .roomsBooked(List.of(Room.builder()
                         .id(22L)

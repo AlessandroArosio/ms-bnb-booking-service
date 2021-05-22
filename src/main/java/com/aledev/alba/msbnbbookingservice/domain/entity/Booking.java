@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -43,10 +43,10 @@ public class Booking {
     private Long customerId;
 
     @NotNull
-    private LocalDateTime checkin;
+    private LocalDate checkin;
 
     @NotNull
-    private LocalDateTime checkout;
+    private LocalDate checkout;
 
     @Positive
     private BigDecimal bookingAmount;

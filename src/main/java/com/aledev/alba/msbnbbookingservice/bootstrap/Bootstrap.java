@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,8 +38,8 @@ public class Bootstrap implements CommandLineRunner {
         bookingRepository.save(Booking.builder()
                 .roomsBooked(all)
                 .bookingUid(UUID.randomUUID())
-                .checkin(LocalDateTime.of(2021, 9, 10, 15, 0))
-                .checkout(LocalDateTime.of(2021, 9, 13, 10, 0))
+                .checkin(LocalDate.of(2021, 9, 10))
+                .checkout(LocalDate.of(2021, 9, 13))
                 .bookingAmount(new BigDecimal("52.50"))
                 .customerId(6L)
                 .isPaid(false)
@@ -50,8 +50,8 @@ public class Bootstrap implements CommandLineRunner {
         bookingRepository.save(Booking.builder()
                 .roomsBooked(List.of(all.get(0)))
                 .bookingUid(UUID.randomUUID())
-                .checkin(LocalDateTime.of(2021, 10, 1, 15, 0))
-                .checkout(LocalDateTime.of(2021, 10, 5, 10, 0))
+                .checkin(LocalDate.of(2021, 10, 1))
+                .checkout(LocalDate.of(2021, 10, 5))
                 .bookingAmount(new BigDecimal("122.75"))
                 .customerId(8L)
                 .isPaid(false)
@@ -62,8 +62,8 @@ public class Bootstrap implements CommandLineRunner {
         bookingRepository.save(Booking.builder()
                 .roomsBooked(List.of(all.get(1)))
                 .bookingUid(UUID.randomUUID())
-                .checkin(LocalDateTime.of(2021, 10, 7, 15, 0))
-                .checkout(LocalDateTime.of(2021, 10, 8, 10, 0))
+                .checkin(LocalDate.of(2021, 10, 7))
+                .checkout(LocalDate.of(2021, 10, 8))
                 .bookingAmount(new BigDecimal("21.90"))
                 .customerId(2L)
                 .isPaid(false)
