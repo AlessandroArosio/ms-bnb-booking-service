@@ -44,6 +44,7 @@ public class Bootstrap implements CommandLineRunner {
                 .customerId(6L)
                 .isPaid(false)
                 .hasAddons(false)
+                .confirmationCode("ABC1")
                 .build());
 
         bookingRepository.save(Booking.builder()
@@ -55,6 +56,7 @@ public class Bootstrap implements CommandLineRunner {
                 .customerId(8L)
                 .isPaid(false)
                 .hasAddons(false)
+                .confirmationCode("ABC2")
                 .build());
 
         bookingRepository.save(Booking.builder()
@@ -66,6 +68,7 @@ public class Bootstrap implements CommandLineRunner {
                 .customerId(2L)
                 .isPaid(false)
                 .hasAddons(true)
+                .confirmationCode("ABC3")
                 .build());
     }
 

@@ -102,6 +102,7 @@ class BookingControllerIT {
                 .checkout(LocalDateTime.of(2021, 7, 17, 10, 0))
                 .createdDate(Timestamp.valueOf(LocalDateTime.now()))
                 .roomsBooked(List.of(room))
+                .confirmationCode("ABC1")
                 .build());
 
         bookingService.newBooking(BookingDto.builder()
@@ -113,6 +114,7 @@ class BookingControllerIT {
                 .checkout(LocalDateTime.of(2021, 6, 17, 10, 0))
                 .createdDate(Timestamp.valueOf(LocalDateTime.now()))
                 .roomsBooked(List.of(room))
+                .confirmationCode("ABC2")
                 .build());
     }
 
@@ -137,6 +139,7 @@ class BookingControllerIT {
                 .checkin(LocalDateTime.now())
                 .checkout(LocalDateTime.now().plusDays(4))
                 .roomsBooked(List.of(roomRepository.findById(1L).get()))
+                .confirmationCode("ABC5")
                 .build();
 
         String body = objectMapper.writeValueAsString(dto);
@@ -202,6 +205,7 @@ class BookingControllerIT {
                 .checkin(LocalDateTime.now())
                 .checkout(LocalDateTime.now().plusDays(9))
                 .roomsBooked(List.of(roomRepository.findById(1L).get()))
+                .confirmationCode("ABC9")
                 .build();
 
         String body = objectMapper.writeValueAsString(dto);

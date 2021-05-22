@@ -53,6 +53,10 @@ public class Booking {
     private Boolean isPaid = false;
     private Boolean hasAddons = false;
 
+    @NotNull
+    @Column(unique = true)
+    private String confirmationCode;
+
     @ManyToMany
     @JoinTable(
             name = "BOOKING_ROOMS",

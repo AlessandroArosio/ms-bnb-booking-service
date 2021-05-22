@@ -44,6 +44,9 @@ public class BookingDto {
     private String notes;
 
     @NotNull
+    private String confirmationCode;
+
+    @NotNull
     private List<Room> roomsBooked;
 
     private Timestamp createdDate;
