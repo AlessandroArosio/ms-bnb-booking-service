@@ -2,6 +2,7 @@ package com.aledev.alba.msbnbbookingservice.web.controller.v1;
 
 import com.aledev.alba.msbnbbookingservice.repository.RoomRepository;
 import com.aledev.alba.msbnbbookingservice.web.mappers.RoomMapper;
+import com.aledev.alba.msbnbbookingservice.web.model.RoomDto;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,9 +22,9 @@ public class RoomController {
 
     @GetMapping
     @Operation(summary = "Fetch all the rooms in the BnB")
-    public List<Object> getRooms() {
+    public List<RoomDto> getRooms() {
         return repository.findAll().stream()
                 .map(mapper::roomToDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
